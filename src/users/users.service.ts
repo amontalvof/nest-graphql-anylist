@@ -13,12 +13,13 @@ import { SignUpInput } from 'src/auth/dto/inputs/signup.input';
 
 @Injectable()
 export class UsersService {
-    private logger = new Logger('UsersService');
+    private readonly logger = new Logger('UsersService');
 
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>
     ) {}
+
     async create(signupInput: SignUpInput): Promise<User> {
         try {
             const newUser = this.userRepository.create({
@@ -35,8 +36,14 @@ export class UsersService {
         return [];
     }
 
-    async findOne(id: string): Promise<User> {
-        return null;
+    async findOneByEmail(email: string): Promise<User> {
+        try {
+            return await this.userRepository.findOneOrFail({
+                where: { email },
+            });
+        } catch (error) {
+            this.handleDBErrors(error);
+        }
     }
 
     update(id: number, updateUserInput: UpdateUserInput) {
