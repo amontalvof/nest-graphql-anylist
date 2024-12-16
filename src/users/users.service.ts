@@ -42,7 +42,10 @@ export class UsersService {
                 where: { email },
             });
         } catch (error) {
-            this.handleDBErrors(error);
+            this.handleDBErrors({
+                code: 'error-001',
+                detail: `${email} not found`,
+            });
         }
     }
 
@@ -57,6 +60,9 @@ export class UsersService {
     private handleDBErrors(error: any): never {
         this.logger.error(error);
         if (error.code === '23505') {
+            throw new BadRequestException(error.detail.replace('Key ', ''));
+        }
+        if (error.code === 'error-001') {
             throw new BadRequestException(error.detail.replace('Key ', ''));
         }
         throw new InternalServerErrorException(
