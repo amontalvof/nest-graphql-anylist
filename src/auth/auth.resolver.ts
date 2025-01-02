@@ -5,6 +5,8 @@ import { AuthResponse } from './types/auth-response.types';
 import { LoginInput } from './dto/inputs/login.input';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { User } from 'src/users/entities/user.entity';
 
 @Resolver()
 export class AuthResolver {
@@ -26,8 +28,8 @@ export class AuthResolver {
 
     @Query(() => AuthResponse, { name: 'revalidateToken' })
     @UseGuards(JwtAuthGuard)
-    revalidateToken() // @CurrentUser() user: User,
-    : AuthResponse {
+    revalidateToken(@CurrentUser() user: User): AuthResponse {
+        console.log('revalidateToken', user);
         // return this.authService.revalidateToken(token);
         throw new Error('Not implemented');
     }
