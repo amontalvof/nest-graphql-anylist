@@ -9,7 +9,7 @@ export class UsersResolver {
     constructor(private readonly usersService: UsersService) {}
 
     @Query(() => [User], { name: 'users' })
-    async findAll(): Promise<User[]> {
+    async findAll(@Args('validRoles') validRoles: string): Promise<User[]> {
         return this.usersService.findAll();
     }
 
